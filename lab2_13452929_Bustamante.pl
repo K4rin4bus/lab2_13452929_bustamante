@@ -35,15 +35,17 @@ setUsers(System, UpdatedUsers, UpdatedSystem):-
     filesystem(Nombre, Drives, _, CurrentDrive, CurrentUser, Content, TimeStamp, System),
     filesystem(Nombre, Drives, UpdatedUsers, CurrentDrive, CurrentUser, Content, TimeStamp, UpdatedSystem).
 
+
 % TDA FileSystem - Modificador (modifica CurrentUser, logea usuario en sistema)
 % Predicado: setLoginUserInSystem/3
 % Dominio: 
-% MetaPrincipal: setLoginUserInSystem(System, User, UpdatedSystem
+% MetaPrincipal: setLoginUserInSystem(System, User, UpdatedSystem)
 % MetaSecundaria: filesystem(Nombre, Drives, Users, CurrentDrive, _, Content, TimeStamp, System),
 %               filesystem(Nombre, Drives, Users, CurrentDrive, User, Content, TimeStamp, UpdatedSystem)
 setLoginUser(System, User, UpdatedSystem):-
     filesystem(Nombre, Drives, Users, CurrentDrive, _, Content, TimeStamp, System),
     filesystem(Nombre, Drives, Users, CurrentDrive, User, Content, TimeStamp, UpdatedSystem).
+
 
 % TDA FileSystem - Modificador (modifica CurrentUser, deslogea usuario en sistema)
 % Predicado: setLogoutUser/2
@@ -55,6 +57,7 @@ setLogoutUser(System, UpdatedSystem):-
     filesystem(Nombre, Drives, Users, CurrentDrive, _, Content, TimeStamp, System),
     filesystem(Nombre, Drives, Users, CurrentDrive, " ", Content, TimeStamp, UpdatedSystem).
 
+
 % TDA FileSystem - Modificador (modifica CurrentDrive en sistema)
 % Predicado: setCurrentDrive/3
 % Dominio: 
@@ -64,11 +67,22 @@ setCurrentDrive(System, Unidad, UpdatedSystem):-
     filesystem(Nombre, Drives, Users, _, CurrentUser, Content, TimeStamp, System),
     filesystem(Nombre, Drives, Users, Unidad, CurrentUser, Content, TimeStamp, UpdatedSystem).
 
+
+% TDA FileSystem - Modificador (modifica Content en sistema)
+% Predicado: 
+% Dominio: 
+% MetaPrincipal:
+% MetaSecundaria:
+setFolderInSystem(System, Ruta, UpdatedSystem):-
+    filesystem(Nombre, Drives, Users, CurrentDrive, CurrentUser, _, TimeStamp, System),
+    filesystem(Nombre, Drives, Users, CurrentDrive, CurrentUser, Ruta, TimeStamp, UpdatedSystem).
+
+
 %========================================================
 % TDA Drive - Constructor
 % Predicado: drive/3
 % Dominio: 
-% MetaPrincipal:
+% MetaPrincipal: drive(Unidad, Nombre, Capacidad,[Unidad, Nombre, Capacidad])
 drive(Unidad, Nombre, Capacidad,[Unidad, Nombre, Capacidad]).
 
 % TDA Drive - Selector (toma lista de drives del sistema)
@@ -89,16 +103,16 @@ letterDriveInSystem(Unidad, System) :-
     filesystem(_, Drives, _, _, _, _, _, System),
     exists(Unidad, Drives).
 
-% TDA  - Pertenencia (revisa si existe elemento en lista)
-% Predicado: exists/2
-% Dominio: 
-% MetaPrincipal: 
-% MetaSecundaria:
-exists(Elemento, [Cabecera|_]) :- % Base caso, primer elemento de lista
-   member(Elemento, Cabecera).
 
-exists(Elemento, [_|RestoListas]) :- % Recursivo caso
-   exists(Elemento, RestoListas).
+% TDA Drive - Selector (toma currentdrive del sistema)
+% Predicado: getCurrentDrive/2
+% Dominio: 
+% MetaPrincipal: getCurrentDrive(System, CurrentDrive)
+% MetaSecundaria:  filesystem(_, _, _, _, CurrentDrive, _, _, System).
+getCurrentDrive(System, CurrentDrive):-
+    filesystem(_, _, _, CurrentDrive, _, _, _, System).
+
+
 
 
 % TDA Drive - Modificador (agrega drive a lista de drives del sistema)
@@ -110,6 +124,22 @@ setAddNewDriveInDrives(NewDrive, Drives, UpdatedDrives):-
    append(Drives, [NewDrive], UpdatedDrives).
 
 %========================================================
+% TDA  - Pertenencia (revisa si existe elemento en lista)
+% Predicado: exists/2
+% Dominio: 
+% MetaPrincipal: 
+% MetaSecundaria:
+exists(Elemento, [Cabecera|_]) :- % Base caso, primer elemento de lista
+   member(Elemento, Cabecera).
+
+exists(Elemento, [_|RestoListas]) :- % Recursivo caso
+   exists(Elemento, RestoListas).
+
+%========================================================
+
+
+
+
 % TDA User - Selector
 % Predicado: getUsers/2
 % Dominio: 
@@ -135,7 +165,6 @@ existsUser(User, Users) :-
 setAddUserInUsers(Users, User, UpdatedUsers):-
     append(Users, [User], UpdatedUsers).
 
-%========================================================
 % TDA User - Selector
 % Predicado: getCurrentUser/2
 % Dominio: 
@@ -146,7 +175,47 @@ getCurrentUser(System, CurrentUser):-
     
 existeCurrentUser(CurrentUser):-
     CurrentUser \== "".
-    
+
+%========================================================
+% TDA Ruta - constructor 
+% Predicado: 
+% Dominio: 
+% MetaPrincipal:
+% MetaSecundaria:
+setRuta(Nombre, User,[Nombre, User, TimeStamp]):-
+     get_time(TimeStamp).
+
+%========================================================
+% TDA  Folder - constructor 
+% Predicado: 
+% Dominio: 
+% MetaPrincipal:
+% MetaSecundaria:
+folder(Nombre, User, [Nombre, User]).
+
+
+%========================================================
+% TDA  File - constructor 
+% Predicado: 
+% Dominio: 
+% MetaPrincipal:
+% MetaSecundaria:
+file(NombreF, ExtensionF, ContenidoF,[NombreF, ExtensionF, ContenidoF]).
+
+
+
+
+% 
+% TDA  
+% Predicado: 
+% Dominio: 
+% MetaPrincipal:
+% MetaSecundaria:
+% 
+% 
+ concatenar(String1, String2, Nombre) :-
+    string_concat(String1, String2, Nombre).
+  
 %========================================================
 %   Reglas requerimientos funcionales
 %========================================================
@@ -203,3 +272,17 @@ systemSwitchDrive(System, Unidad, UpdatedSystem):-
     existeCurrentUser(CurrentUser),
     letterDriveInSystem(Unidad, System),
     setCurrentDrive(System, Unidad, UpdatedSystem).
+
+%RF-7 systemMkdir
+%creando la carpeta c1 dentro de la unidad C
+%systemMkdir(S, "c1", S2).
+%Rutas (List Ruta)
+% Type Ruta = (nombreRuta Archivo fechaModificacion)
+% Type Archivo = (nombreArchivo contenidoArchivo)
+systemMkdir(System, FolderName, UpdatedSystem):-
+    getCurrentDrive(System, CurrentDrive), % tomo el drive
+    getCurrentUser(System, CurrentUser), % tomo al user
+    concatenar(CurrentDrive, FolderName, Nombre),
+    setRuta(Nombre, CurrentUser, Ruta),
+    setFolderInSystem(System, Ruta, UpdatedSystem).
+
