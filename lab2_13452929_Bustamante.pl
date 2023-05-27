@@ -113,8 +113,6 @@ getCurrentDrive(System, CurrentDrive):-
     filesystem(_, _, _, CurrentDrive, _, _, _, System).
 
 
-
-
 % TDA Drive - Modificador (agrega drive a lista de drives del sistema)
 % Predicado: setAddNewDriveInDrives/3
 % Dominio: 
@@ -286,3 +284,9 @@ systemMkdir(System, FolderName, UpdatedSystem):-
     setRuta(Nombre, CurrentUser, Ruta),
     setFolderInSystem(System, Ruta, UpdatedSystem).
 
+
+
+%usar predicado usemodule para separar codigo
+%consult('tda_user.pl'). 
+%consult('tda_drive.pl').
+%consult('exists.pl').
