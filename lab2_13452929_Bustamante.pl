@@ -193,7 +193,8 @@ existeCurrentUser(CurrentUser):-
 getCurrentPath(System, CurrentPath):-
     filesystem(_, _, _, _, _, CurrentPath, _, _, System).
 
-
+existeCurrentPath(CurrentPath):-
+    CurrentPath \== "".
 
 %========================================================
 
@@ -236,8 +237,8 @@ file(NombreF, ExtensionF, ContenidoF,[NombreF, ExtensionF, ContenidoF]).
 % MetaSecundaria:
 % 
 % 
- concatenar(String1, String2, Nombre) :-
-    string_concat(String1, String2, Nombre).
+ %concatenar(String1, String2, Nombre) :-
+ %   string_concat(String1, String2, Nombre).
 
 % Comprueba si un directorio existe en una ruta dada
 exists_directory(Directory, [Directory | _]).
@@ -259,8 +260,9 @@ mkdir(FolderName, Currentdrive, Ruta) :-
 %RF-1 System
 % creando un nuevo sistema con nombre “NewSystem”
 % system("NewSystem", S).
+%filesystem(Nombre, Drives, Users, CurrentDrive, CurrentUser, CurrentPath, Content, [Nombre, Drives, Users, CurrentDrive, CurrentUser, CurrentPath, Content, TimeStamp]):-
 system(Nombre, Sistema):-
-   filesystem(Nombre, [], [], " ", " ", [], [], Sistema).
+   filesystem(Nombre, [], [], " ", " ", " ", [], Sistema).
 
 %RF-2 systemAddDrive
 % creando la unidad C, con nombre “OS” y capacidad 1000000000 en el sistema “NewSystem”
@@ -307,17 +309,17 @@ systemSwitchDrive(System, Unidad, UpdatedSystem):-
     getCurrentUser(System, CurrentUser),
     existeCurrentUser(CurrentUser),
     letterDriveInSystem(Unidad, System),
-    setCurrentDrive(System, Unidad, UpdatedSystem),
-    Ruta = Unidad,
-    setCurrentPath(System, Ruta, UpdatedSystem).
-
+    setCurrentDrive(System, Unidad, UpdatedSystem).
+    
 %RF-7 systemMkdir
 %creando la carpeta c1 dentro de la unidad C
 %systemMkdir(S, "c1", S2).
 systemMkdir(System, FolderName, UpdatedSystem):-
-    %getCurrentDrive(System, CurrentDrive), % tomo el drive
+    getCurrentPath(System, CurrentPath), %tomo path actual
+    existeCurrentPath(CurrentPath), % path actual vacio
+    getCurrentDrive(System, CurrentDrive), % tomo el drive
     getCurrentUser(System, CurrentUser), % tomo al user
-    getCurrentPath(System, CurrentPath), %tomo al user
+   
     mkdir(FolderName, CurrentPath, Ruta), %creo el directorio
     %creo la ruta
     setRuta(Ruta, CurrentUser, NewRuta),
