@@ -25,7 +25,17 @@ systemSwitchDrive(S5, "C:/", S6).
 
 
 
-
+%========================================================
+%   				TDA Ruta
+%========================================================
+% TDA Ruta - constructor 
+% Predicado: 
+% Dominio: 
+% MetaPrincipal:
+% MetaSecundaria:
+setRuta(Ruta, CurrentUser,[Ruta, CurrentUser, TimeStamp]):-
+     get_time(TimeStamp).
+%tengo lista de ruta, debo agregar a lista de contenido en el sistema
 
 
 
