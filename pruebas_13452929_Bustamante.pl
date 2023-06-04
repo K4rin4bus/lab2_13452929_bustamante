@@ -16,4 +16,26 @@ systemAddDrive(S, "C:/",  "OS", 10000000000, S1),
 systemAddDrive(S1, "D:/",  "IOS", 20000000000, S2),
 systemRegister(S2, "user1", S3),
 systemLogin(S3, "user1", S4),
-systemSwitchDrive(S4, "C:/", S5).
+systemSwitchDrive(S4, "C:/", S5),
+systemSwitchDrive(S5, "C:/", S6).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
