@@ -258,7 +258,6 @@ exists(Elemento, [_|RestoListas]) :- % Recursivo caso
    exists(Elemento, RestoListas).
 %========================================================
 
-
 concatenar(String1, String2, String3, Resultado) :-
     concat(String1, String2, Temp),    % Concatena String1 y String2 en Temp
     concat(Temp, String3, Resultado).  % Concatena Temp y String3 en Resultado
@@ -319,6 +318,7 @@ systemMkdir(System, FolderName, UpdatedSystem):-
     getCurrentUser(System, CurrentUser), % tomo al user actual
     getCurrentDrive(System, CurrentDrive), % tomo al drive actual
     getCurrentPath(System, CurrentPath), % tomo el path actual
+    
     concatenar(CurrentPath, "/", FolderName, NewPath),
     content(CurrentDrive, NewPath, [], " ", CurrentUser, NewContent),
     getContent(System, CurrentContent),
@@ -337,8 +337,9 @@ systemAddFile(System, NewFile, UpdatedSystem):-
     getCurrentUser(System, CurrentUser), % tomo al user actual
     getCurrentDrive(System, CurrentDrive), % tomo al drive actual
     getCurrentPath(System, CurrentPath), % tomo el path actual
+    NewPath = CurrentPath,
     %revisar si esxiste archivo en ruta (se reemplaza)
     getContent(System, CurrentContent),
     content(CurrentDrive, CurrentPath, NewFile, " ", CurrentUser, NewContent),
     setAddNewContentInContent(NewContent, CurrentContent, UpdatedContent),
-    setContent(System, UpdatedContent, UpdatedSystem).
+    setContent(System, NewPath, UpdatedContent, UpdatedSystem).
